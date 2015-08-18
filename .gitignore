@@ -15,4 +15,5 @@ target
 .idea
 *.iml
 classes
+lib
 work
