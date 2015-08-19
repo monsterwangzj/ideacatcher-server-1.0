@@ -30,6 +30,9 @@ public class User implements Serializable {
     @Column(name = "birthday")
     private Long birthday;
 
+    @Column(name = "status")
+    private byte status;
+
     @Column(name = "createtime")
     private Long createTime;
 
@@ -94,6 +97,14 @@ public class User implements Serializable {
 
     public void setBirthday(Long birthday) {
         this.birthday = birthday;
+    }
+
+    public byte getStatus() {
+        return status;
+    }
+
+    public void setStatus(byte status) {
+        this.status = status;
     }
 
     public Long getCreateTime() {

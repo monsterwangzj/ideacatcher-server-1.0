@@ -8,4 +8,6 @@ public interface UserDao {
 
     List<User> getAllUser();
 
+    User findUserByUsernamenPassword(String username, String password);
+
 }
