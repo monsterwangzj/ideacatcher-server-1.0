@@ -16,5 +16,6 @@ target
 *.iml
 classes
 lib
+tmp
 work
 persistence-mysql.properties

@@ -2,17 +2,14 @@ package com.softwisdom.ideacatcher.dao.impl;
 
 import com.softwisdom.ideacatcher.dao.UserDao;
 import com.softwisdom.ideacatcher.model.User;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Collections;
 import java.util.List;
-
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class UserDaoImpl implements UserDao {
     private static Logger logger = LogManager.getLogger(UserDaoImpl.class.getName());
@@ -38,7 +35,7 @@ public class UserDaoImpl implements UserDao {
             return null;
         } else {
             if (userList.size() > 1) {
-                logger.error("username " + username + ", password " + password + " 对应" + userList.size() + "个用户，存在账号风险，请立即处理");
+                logger.error("username " + username + ", password " + password + " 瀵瑰簲" + userList.size() + "涓敤鎴凤紝瀛樺湪璐﹀彿椋庨櫓锛岃绔嬪嵆澶勭悊");
             }
             return userList.get(0);
         }

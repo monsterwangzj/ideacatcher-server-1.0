@@ -1,8 +1,8 @@
 package com.softwisdom.ideacatcher.enums;
 
 public enum UserStatusEnum {
-    USER_STATUS_NORMAL(0, "Õý³£"),
-    USER_STATUS_FREEZE(-1, "¶³½á");
+    USER_STATUS_NORMAL(0, "æ­£å¸¸"),
+    USER_STATUS_FREEZE(-1, "å†»ç»“");
 
     private final int code;
     private final String description;
@@ -12,10 +12,6 @@ public enum UserStatusEnum {
         this.description = description;
     }
 
-    public int getCode() {
-        return code;
-    }
-
     public static UserStatusEnum valueOf(int code) {
         if (code == USER_STATUS_NORMAL.code) {
             return USER_STATUS_NORMAL;
@@ -23,6 +19,10 @@ public enum UserStatusEnum {
             return USER_STATUS_FREEZE;
         }
         return null;
+    }
+
+    public int getCode() {
+        return code;
     }
 
 }

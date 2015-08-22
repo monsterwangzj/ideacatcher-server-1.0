@@ -1,7 +1,5 @@
 package com.softwisdom.ideacatcher.model;
 
-import javassist.SerialVersionUID;
-
 import javax.persistence.*;
 import java.io.Serializable;
 

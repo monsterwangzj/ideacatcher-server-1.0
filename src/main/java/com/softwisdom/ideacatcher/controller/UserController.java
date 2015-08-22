@@ -2,15 +2,21 @@ package com.softwisdom.ideacatcher.controller;
 
 import com.softwisdom.ideacatcher.enums.UserStatusEnum;
 import com.softwisdom.ideacatcher.model.User;
-import com.softwisdom.ideacatcher.result.CommonJsonResult;
+import com.softwisdom.ideacatcher.result.LoginJsonResult;
 import com.softwisdom.ideacatcher.service.UserService;
+import com.softwisdom.ideacatcher.util.RedisUtil;
+import com.softwisdom.ideacatcher.util.ResponseUtil;
+import net.sf.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping("/user")
@@ -18,6 +24,9 @@ public class UserController {
 
     @Resource(name = "userService")
     private UserService userService;
+
+//    public static int VIDEO_TOTAL_NUMBER = 800000;
+//    public static Map<String, Long> videoMapBuffer = Collections.synchronizedMap(new LRUMap(VIDEO_TOTAL_NUMBER));
 
     @RequestMapping(value = "/register")
     public ModelAndView register() {
@@ -36,25 +45,27 @@ public class UserController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/login")
-    public CommonJsonResult login(String username, String password) {
-        CommonJsonResult commonJsonResult = null;
+    @RequestMapping(value = "/login", produces = "text/html;charset=UTF-8")
+    public void login(String username, String password, HttpServletResponse resp) {
+        LoginJsonResult loginJsonResult = null;
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
-            commonJsonResult = setResponseResult(-100, "”√ªß√˚ªÚ√‹¬ÎŒ™ø’");
+            loginJsonResult = setResponseResult(-100, null, "Áî®Êà∑ÂêçÊàñÂØÜÁ†Å‰∏∫Á©∫");
         } else {
             boolean loginSucc = false;
             User user = userService.findUserByUsernamenPassword(username, password);
             if (user == null) {
-                commonJsonResult = setResponseResult(-110, "”√ªß√˚ªÚ√‹¬Î¥ÌŒÛ");
+                loginJsonResult = setResponseResult(-110, null, "Áî®Êà∑ÂêçÊàñÂØÜÁ†Å‰∏çÊ≠£Á°Æ");
             } else if (user.getStatus() == UserStatusEnum.USER_STATUS_FREEZE.getCode()) {
-                commonJsonResult = setResponseResult(-120, "”√ªß“—∂≥Ω·");
+                loginJsonResult = setResponseResult(-120, null, "Áî®Êà∑Â∑≤ÂÜªÁªì");
             } else {
-                // –¬Ω®session TODO
-                commonJsonResult = setResponseResult(0, "µ«¬º≥…π¶");
+                Long userId = user.getId();
+                RedisUtil.setLong("user-" + userId, 1000L); // ÁôªÂΩïsession
+
+                loginJsonResult = setResponseResult(0, userId.toString(), "ÁôªÂΩïÊàêÂäü");
             }
         }
 
-        return commonJsonResult;
+        ResponseUtil.sendMessageNoCache(resp, JSONObject.fromObject(loginJsonResult).toString());
     }
 
     @RequestMapping(value = "/logout")
@@ -67,13 +78,14 @@ public class UserController {
         return mv;
     }
 
-    private CommonJsonResult setResponseResult(int code, String desc) {
-        CommonJsonResult commonJsonResult = new CommonJsonResult();
-        commonJsonResult.setSuccess(true);
-        commonJsonResult.setCode(code);
-        commonJsonResult.setDesc(desc);
+    private LoginJsonResult setResponseResult(int code, String loginToken, String desc) {
+        LoginJsonResult loginJsonResult = new LoginJsonResult();
+        loginJsonResult.setSuccess(true);
+        loginJsonResult.setLoginToken(loginToken);
+        loginJsonResult.setCode(code);
+        loginJsonResult.setDesc(desc);
 
-        return commonJsonResult;
+        return loginJsonResult;
     }
 
 }
